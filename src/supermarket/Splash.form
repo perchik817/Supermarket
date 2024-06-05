@@ -48,7 +48,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="MyProgressBar" max="32767" attributes="0"/>
+                          <Component id="myProgressBar" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -62,7 +62,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="254" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="percentage" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="0" pref="123" max="32767" attributes="0"/>
@@ -80,9 +80,9 @@
                   <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
                   <Component id="jLabel4" min="-2" pref="73" max="-2" attributes="0"/>
                   <EmptySpace pref="70" max="32767" attributes="0"/>
-                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="percentage" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="MyProgressBar" min="-2" pref="16" max="-2" attributes="0"/>
+                  <Component id="myProgressBar" min="-2" pref="16" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -101,14 +101,14 @@
             <Property name="text" type="java.lang.String" value="ABIYIR SUPERMARKET"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JProgressBar" name="MyProgressBar">
+        <Component class="javax.swing.JProgressBar" name="myProgressBar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="percentage">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Microsoft JhengHei" size="24" style="0"/>
