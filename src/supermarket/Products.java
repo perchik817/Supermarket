@@ -394,8 +394,8 @@ public class Products extends javax.swing.JFrame {
                 preparedStatement.setInt(1, Integer.parseInt(id.getText()));
                 preparedStatement.setString(2, name.getText());
                 preparedStatement.setString(3, category.getSelectedItem().toString());
-                preparedStatement.setString(4, quantity.getText());
-                preparedStatement.setString(5, price.getText());
+                preparedStatement.setInt(4, Integer.parseInt(quantity.getText()));
+                preparedStatement.setInt(5, Integer.parseInt(price.getText()));
 
                 int row = preparedStatement.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Product added successfully.");
