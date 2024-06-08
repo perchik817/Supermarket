@@ -403,7 +403,7 @@ public class Category extends javax.swing.JFrame {
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
         if(id.getText().isEmpty() || name.getText().isEmpty() || description.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Please, fill all fields!");
+            JOptionPane.showMessageDialog(this, "Missing information!");
         } else{
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket",
