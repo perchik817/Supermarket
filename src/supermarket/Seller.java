@@ -151,6 +151,11 @@ public class Seller extends javax.swing.JFrame {
         editBtn.setText("EDIT");
         editBtn.setBorder(null);
         editBtn.setBorderPainted(false);
+        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editBtnMouseClicked(evt);
+            }
+        });
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
@@ -401,9 +406,14 @@ public class Seller extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
     }//GEN-LAST:event_delBtnMouseClicked
+
+    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+        id.setText("");
+        .setText("");
+        password.setText("");
+    }//GEN-LAST:event_editBtnMouseClicked
 
     public void selectSeller() {
         try {
