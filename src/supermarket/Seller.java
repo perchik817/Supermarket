@@ -411,7 +411,7 @@ public class Seller extends javax.swing.JFrame {
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
         id.setText("");
-        .setText("");
+        name.setText("");
         password.setText("");
     }//GEN-LAST:event_editBtnMouseClicked
 
