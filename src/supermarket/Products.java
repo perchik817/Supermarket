@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
@@ -177,6 +179,11 @@ public class Products extends javax.swing.JFrame {
         editBtn.setText("EDIT");
         editBtn.setBorder(null);
         editBtn.setBorderPainted(false);
+        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editBtnMouseClicked(evt);
+            }
+        });
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
@@ -426,28 +433,8 @@ public class Products extends javax.swing.JFrame {
         price.setText("");
     }//GEN-LAST:event_clearBtnMouseClicked
 
-    private boolean findById(int productId) {
-        boolean exists = false;
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-            String query = "SELECT COUNT(*) FROM product_tb WHERE id = ?";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, productId);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                exists = count > 0; // Проверяем, больше ли количество записей нуля
-            }
-            connection.close();
-        } catch (SQLException ex) {
-            System.out.println("Failed to connect to the database");
-        }
-        return exists;
-    }
-
-
     private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
-        if (id.getText().isEmpty() || findById(Integer.parseInt(id.getText()))) {
+        if (id.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter correct product's id to delete!");
         } else {
             try {
@@ -459,10 +446,40 @@ public class Products extends javax.swing.JFrame {
                 connection.close();
                 selectProd();
             } catch (SQLException ex) {
+                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Failed to connect to the database");
             }
         }
     }//GEN-LAST:event_deleteBtnMouseClicked
+
+    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+        if (id.getText().isEmpty() || name.getText().isEmpty() || quantity.getText().isEmpty()  || price.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Missing info!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String query = "UPDATE product_tb SET name=?, category=?, quantity=?, price=? WHERE id=?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, name.getText());
+                preparedStatement.setString(2, category.getSelectedItem().toString());
+                preparedStatement.setInt(3, Integer.parseInt(quantity.getText()));
+                preparedStatement.setInt(4, Integer.parseInt(price.getText()));
+                preparedStatement.setInt(5, Integer.parseInt(id.getText()));
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Product was updated!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Product not found with given ID.");
+                }
+                connection.close();
+                selectProd();
+            } catch (SQLException ex) {
+                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }//GEN-LAST:event_editBtnMouseClicked
 
     public void selectProd() {
         try {

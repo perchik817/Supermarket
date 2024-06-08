@@ -381,7 +381,7 @@ public class Category extends javax.swing.JFrame {
                 connection.close();
                 selectCategory();
             } catch (SQLException ex) {
-                Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Category.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Failed to connect to the database");
             }
         }
