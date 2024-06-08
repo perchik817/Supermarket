@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
@@ -14,6 +15,7 @@ import net.proteanit.sql.DbUtils;
  * @author Perchik
  */
 public class Products extends javax.swing.JFrame {
+
     public Products() {
         initComponents();
         selectProd();
@@ -194,6 +196,11 @@ public class Products extends javax.swing.JFrame {
         addBtn.setText("ADD");
         addBtn.setBorder(null);
         addBtn.setBorderPainted(false);
+        addBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addBtnMouseClicked(evt);
+            }
+        });
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBtnActionPerformed(evt);
@@ -367,7 +374,7 @@ public class Products extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void prodTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prodTableMouseClicked
-        DefaultTableModel model = (DefaultTableModel) sellersTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) prodTable.getModel();
         int index = prodTable.getSelectedRow();
         id.setText(model.getValueAt(index, 0).toString());
         name.setText(model.getValueAt(index, 1).toString());
@@ -376,7 +383,32 @@ public class Products extends javax.swing.JFrame {
         price.setText(model.getValueAt(index, 4).toString());
     }//GEN-LAST:event_prodTableMouseClicked
 
-    public void selectProd(){
+    private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
+        if ((id.getText().isEmpty() || name.getText().isEmpty()) || quantity.getText().isEmpty() || price.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please, fill all fields!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String query = "INSERT INTO product_tb (id, name, category, quantity, price) VALUES (?, ?, ?, ?, ?)";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, Integer.parseInt(id.getText()));
+                preparedStatement.setString(2, name.getText());
+                preparedStatement.setString(3, category.getSelectedItem().toString());
+                preparedStatement.setString(4, quantity.getText());
+                preparedStatement.setString(5, price.getText());
+
+                int row = preparedStatement.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Product added successfully.");
+                connection.close();
+                selectProd();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }//GEN-LAST:event_addBtnMouseClicked
+
+    public void selectProd() {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
             statement = connection.createStatement();
@@ -384,10 +416,10 @@ public class Products extends javax.swing.JFrame {
             prodTable.setModel(DbUtils.resultSetToTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
-                System.out.println("Failed to connect to the database");
+            System.out.println("Failed to connect to the database");
         }
     }
-    
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
