@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import net.proteanit.sql.DbUtils;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -19,6 +19,7 @@ public class Category extends javax.swing.JFrame {
 
     public Category() {
         initComponents();
+        selectCategory();
     }
 
     Connection connection = null;
@@ -173,6 +174,11 @@ public class Category extends javax.swing.JFrame {
         catList.setSelectionBackground(new java.awt.Color(0, 204, 255));
         catList.setSelectionForeground(new java.awt.Color(255, 255, 255));
         catList.setShowGrid(true);
+        catList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                catListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(catList);
 
         jLabel8.setFont(new java.awt.Font("Eras Bold ITC", 0, 24)); // NOI18N
@@ -353,12 +359,12 @@ public class Category extends javax.swing.JFrame {
 
     private void delBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delBtnMouseClicked
         if (id.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter correct seller's id to delete!");
+            JOptionPane.showMessageDialog(this, "Enter correct category's id to delete!");
         } else {
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-                String sellerId = id.getText();
-                String query = "delete from category_tb where id=" + sellerId;
+                String catId = id.getText();
+                String query = "delete from category_tb where id=" + catId;
                 Statement delete = connection.createStatement();
                 delete.executeUpdate(query);
                 JOptionPane.showMessageDialog(this, "Category deleted successfully!");
@@ -370,19 +376,41 @@ public class Category extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_delBtnMouseClicked
-    
+
+    private void catListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_catListMouseClicked
+        DefaultTableModel model = (DefaultTableModel) catList.getModel();
+        int index = catList.getSelectedRow();
+        id.setText(model.getValueAt(index, 0).toString());
+        name.setText(model.getValueAt(index, 1).toString());
+        description.setText(model.getValueAt(index, 2).toString());
+    }//GEN-LAST:event_catListMouseClicked
+
     public void selectCategory() {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from category_tb");
-            catList.setModel(DbUtils.resultSetToTableModel(resultSet));
+            DefaultTableModel model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            model.setColumnIdentifiers(new String[]{"ID", "NAME", "DESCRIPTION"});
+            while (resultSet.next()) {
+                model.addRow(new Object[]{
+                    resultSet.getInt("id"), 
+                    resultSet.getString("name"), 
+                    resultSet.getString("description")});
+            }
+            catList.setModel(model);
+            //catList.setModel(DbUtils.resultSetToTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
-                System.out.println("Failed to connect to the database");
+            System.out.println("Failed to connect to the database");
         }
     }
-    
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
