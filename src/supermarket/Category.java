@@ -152,6 +152,11 @@ public class Category extends javax.swing.JFrame {
         clearBtn.setText("CLEAR");
         clearBtn.setBorder(null);
         clearBtn.setBorderPainted(false);
+        clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clearBtnMouseClicked(evt);
+            }
+        });
         clearBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearBtnActionPerformed(evt);
@@ -384,6 +389,12 @@ public class Category extends javax.swing.JFrame {
         name.setText(model.getValueAt(index, 1).toString());
         description.setText(model.getValueAt(index, 2).toString());
     }//GEN-LAST:event_catListMouseClicked
+
+    private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
+        id.setText("");
+        name.setText("");
+        description.setText("");
+    }//GEN-LAST:event_clearBtnMouseClicked
 
     public void selectCategory() {
         try {
