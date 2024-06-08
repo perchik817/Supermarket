@@ -26,6 +26,7 @@ public class Seller extends javax.swing.JFrame {
     Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -168,6 +169,11 @@ public class Seller extends javax.swing.JFrame {
         clearBtn.setText("CLEAR");
         clearBtn.setBorder(null);
         clearBtn.setBorderPainted(false);
+        clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clearBtnMouseClicked(evt);
+            }
+        });
         clearBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearBtnActionPerformed(evt);
@@ -365,13 +371,14 @@ public class Seller extends javax.swing.JFrame {
         } else {
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-                PreparedStatement add = connection.prepareStatement("insert into seller_tb values(?, ?, ?, ?)");
-                add.setInt(1, Integer.parseInt(id.getText()));
-                add.setString(2, name.getText());
-                add.setString(3, password.getText());
-                add.setString(4, genderBox.getSelectedItem().toString());
-                int row = add.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Seller added successfully!");
+                String query = "INSERT INTO seller_tb (id, name, password, gender) VALUES (?, ?, ?, ?)";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, Integer.parseInt(id.getText()));
+                preparedStatement.setString(2, name.getText());
+                preparedStatement.setString(3, password.getText());
+                preparedStatement.setString(4, genderBox.getSelectedItem().toString());
+                int row = preparedStatement.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Seller added successfully.");
                 connection.close();
                 selectSeller();
             } catch (SQLException e) {
@@ -400,20 +407,49 @@ public class Seller extends javax.swing.JFrame {
                 String query = "delete from seller_tb where id=" + sellerId;
                 Statement delete = connection.createStatement();
                 delete.executeUpdate(query);
-                JOptionPane.showMessageDialog(this, "Seller was deleted successfully!");
+                JOptionPane.showMessageDialog(this, "Seller deleted successfully!");
                 connection.close();
                 selectSeller();
             } catch (SQLException ex) {
                 Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to the database");
             }
         }
     }//GEN-LAST:event_delBtnMouseClicked
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+        if(id.getText().isEmpty() || name.getText().isEmpty() || password.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please, fill all fields!");
+        } else{
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String query = "UPDATE seller_tb SET name=?, password=?, gender=? WHERE id=?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, name.getText());
+                preparedStatement.setString(2, password.getText());
+                preparedStatement.setString(3, genderBox.getSelectedItem().toString());
+                preparedStatement.setInt(4, Integer.parseInt(id.getText()));
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Seller was updated!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Seller not found with given ID.");
+                }
+                connection.close();
+                selectSeller();
+            } catch (SQLException ex) {
+                Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }//GEN-LAST:event_editBtnMouseClicked
+
+    private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
         id.setText("");
         name.setText("");
         password.setText("");
-    }//GEN-LAST:event_editBtnMouseClicked
+    }//GEN-LAST:event_clearBtnMouseClicked
 
     public void selectSeller() {
         try {
@@ -423,6 +459,7 @@ public class Seller extends javax.swing.JFrame {
             sellersTable.setModel(DbUtils.resultSetToTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
+                System.out.println("Failed to connect to the database");
         }
     }
 
