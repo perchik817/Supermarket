@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
@@ -132,6 +134,11 @@ public class Seller extends javax.swing.JFrame {
         delBtn.setText("DELETE");
         delBtn.setBorder(null);
         delBtn.setBorderPainted(false);
+        delBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                delBtnMouseClicked(evt);
+            }
+        });
         delBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 delBtnActionPerformed(evt);
@@ -377,6 +384,26 @@ public class Seller extends javax.swing.JFrame {
         password.setText(model.getValueAt(index, 2).toString());
         genderBox.setSelectedItem(model.getValueAt(index, 3).toString());
     }//GEN-LAST:event_sellersTableMouseClicked
+
+    private void delBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delBtnMouseClicked
+        if (id.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter correct seller's id to delete!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String sellerId = id.getText();
+                String query = "delete from seller_tb where id=" + sellerId;
+                Statement delete = connection.createStatement();
+                delete.executeUpdate(query);
+                JOptionPane.showMessageDialog(this, "Seller was deleted successfully!");
+                connection.close();
+                selectSeller();
+            } catch (SQLException ex) {
+                Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_delBtnMouseClicked
 
     public void selectSeller() {
         try {
