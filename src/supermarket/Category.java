@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
 
@@ -120,6 +122,11 @@ public class Category extends javax.swing.JFrame {
         delBtn.setText("DELETE");
         delBtn.setBorder(null);
         delBtn.setBorderPainted(false);
+        delBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                delBtnMouseClicked(evt);
+            }
+        });
         delBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 delBtnActionPerformed(evt);
@@ -343,6 +350,26 @@ public class Category extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_addBtnMouseClicked
+
+    private void delBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delBtnMouseClicked
+        if (id.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter correct seller's id to delete!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String sellerId = id.getText();
+                String query = "delete from category_tb where id=" + sellerId;
+                Statement delete = connection.createStatement();
+                delete.executeUpdate(query);
+                JOptionPane.showMessageDialog(this, "Category deleted successfully!");
+                connection.close();
+                selectCategory();
+            } catch (SQLException ex) {
+                Logger.getLogger(Seller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }//GEN-LAST:event_delBtnMouseClicked
     
     public void selectCategory() {
         try {
