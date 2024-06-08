@@ -189,6 +189,11 @@ public class Products extends javax.swing.JFrame {
         deleteBtn.setText("DELETE");
         deleteBtn.setBorder(null);
         deleteBtn.setBorderPainted(false);
+        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteBtnMouseClicked(evt);
+            }
+        });
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteBtnActionPerformed(evt);
@@ -420,6 +425,44 @@ public class Products extends javax.swing.JFrame {
         quantity.setText("");
         price.setText("");
     }//GEN-LAST:event_clearBtnMouseClicked
+
+    private boolean findById(int productId) {
+        boolean exists = false;
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+            String query = "SELECT COUNT(*) FROM product_tb WHERE id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, productId);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                exists = count > 0; // Проверяем, больше ли количество записей нуля
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            System.out.println("Failed to connect to the database");
+        }
+        return exists;
+    }
+
+
+    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
+        if (id.getText().isEmpty() || findById(Integer.parseInt(id.getText()))) {
+            JOptionPane.showMessageDialog(this, "Enter correct product's id to delete!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String query = "delete from product_tb where id=" + id.getText();
+                Statement delete = connection.createStatement();
+                delete.executeUpdate(query);
+                JOptionPane.showMessageDialog(this, "Product deleted successfully!");
+                connection.close();
+                selectProd();
+            } catch (SQLException ex) {
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }//GEN-LAST:event_deleteBtnMouseClicked
 
     public void selectProd() {
         try {
