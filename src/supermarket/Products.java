@@ -160,6 +160,11 @@ public class Products extends javax.swing.JFrame {
         clearBtn.setText("CLEAR");
         clearBtn.setBorder(null);
         clearBtn.setBorderPainted(false);
+        clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clearBtnMouseClicked(evt);
+            }
+        });
         clearBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearBtnActionPerformed(evt);
@@ -407,6 +412,14 @@ public class Products extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_addBtnMouseClicked
+
+    private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
+        id.setText("");
+        name.setText("");
+        category.setSelectedItem("");
+        quantity.setText("");
+        price.setText("");
+    }//GEN-LAST:event_clearBtnMouseClicked
 
     public void selectProd() {
         try {
