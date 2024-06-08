@@ -140,6 +140,11 @@ public class Category extends javax.swing.JFrame {
         editBtn.setText("EDIT");
         editBtn.setBorder(null);
         editBtn.setBorderPainted(false);
+        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editBtnMouseClicked(evt);
+            }
+        });
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
@@ -395,6 +400,36 @@ public class Category extends javax.swing.JFrame {
         name.setText("");
         description.setText("");
     }//GEN-LAST:event_clearBtnMouseClicked
+
+    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+        if(id.getText().isEmpty() || name.getText().isEmpty() || description.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please, fill all fields!");
+        } else{
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket",
+                        "postgres",
+                        "postgres");
+                String query = "update category_tb set name=?, description=? where id=?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, name.getText());
+                preparedStatement.setString(2, description.getText());
+                preparedStatement.setInt(3, Integer.parseInt(id.getText()));
+                
+                int rowsAff = preparedStatement.executeUpdate();
+                if (rowsAff > 0) {
+                    JOptionPane.showMessageDialog(this, "Category was updated!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Category not found with given ID.");
+                }
+                connection.close();
+                selectCategory();
+            } catch (SQLException ex) {
+                System.out.println("Failed to connect to the DB");
+                Logger.getLogger(Category.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    }//GEN-LAST:event_editBtnMouseClicked
 
     public void selectCategory() {
         try {
