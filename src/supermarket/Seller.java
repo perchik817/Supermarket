@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import net.proteanit.sql.DbUtils;
 
 /**
  *
@@ -16,12 +18,13 @@ public class Seller extends javax.swing.JFrame {
 
     public Seller() {
         initComponents();
+        selectSeller();
     }
-    
+
     Connection connection = null;
     Statement statement = null;
-    ResultSet result = null;
-    
+    ResultSet resultSet = null;
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -68,7 +71,7 @@ public class Seller extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("NAME");
 
-        id.setFont(new java.awt.Font("Microsoft JhengHei UI", 0, 12)); // NOI18N
+        id.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12)); // NOI18N
         id.setForeground(new java.awt.Color(0, 204, 255));
         id.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,7 +79,7 @@ public class Seller extends javax.swing.JFrame {
             }
         });
 
-        name.setFont(new java.awt.Font("Microsoft JhengHei UI", 0, 12)); // NOI18N
+        name.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12)); // NOI18N
         name.setForeground(new java.awt.Color(0, 204, 255));
         name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,7 +97,7 @@ public class Seller extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel7.setText("GENDER");
 
-        password.setFont(new java.awt.Font("Microsoft JhengHei UI", 0, 12)); // NOI18N
+        password.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12)); // NOI18N
         password.setForeground(new java.awt.Color(0, 204, 255));
         password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +105,7 @@ public class Seller extends javax.swing.JFrame {
             }
         });
 
-        genderBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        genderBox.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         genderBox.setForeground(new java.awt.Color(0, 204, 255));
         genderBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
@@ -175,6 +178,11 @@ public class Seller extends javax.swing.JFrame {
         sellersTable.setSelectionBackground(new java.awt.Color(0, 204, 255));
         sellersTable.setSelectionForeground(new java.awt.Color(255, 255, 255));
         sellersTable.setShowGrid(true);
+        sellersTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                sellersTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(sellersTable);
 
         jLabel8.setFont(new java.awt.Font("Eras Bold ITC", 0, 24)); // NOI18N
@@ -233,7 +241,6 @@ public class Seller extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
@@ -294,7 +301,7 @@ public class Seller extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -341,50 +348,48 @@ public class Seller extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
-        try{
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-            PreparedStatement add = connection.prepareStatement("insert into seller_tb values(?, ?, ?, ?)");
-            add.setInt(1, Integer.parseInt(id.getText()));
-            add.setString(2, name.getText());
-            add.setString(3, password.getText());
-            add.setString(4, genderBox.getSelectedItem().toString());
-            int row = add.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Seller added successfully!");
-            System.out.println("Connection established");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed to connect to the database");
+        if ((id.getText().isEmpty() || name.getText().isEmpty()) || password.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please, fill all fields!");
+        } else {
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                PreparedStatement add = connection.prepareStatement("insert into seller_tb values(?, ?, ?, ?)");
+                add.setInt(1, Integer.parseInt(id.getText()));
+                add.setString(2, name.getText());
+                add.setString(3, password.getText());
+                add.setString(4, genderBox.getSelectedItem().toString());
+                int row = add.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Seller added successfully!");
+                connection.close();
+                selectSeller();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Failed to connect to the database");
+            }
         }
     }//GEN-LAST:event_addBtnMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Seller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Seller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Seller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Seller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void sellersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sellersTableMouseClicked
+        DefaultTableModel model = (DefaultTableModel) sellersTable.getModel();
+        int index = sellersTable.getSelectedRow();
+        id.setText(model.getValueAt(index, 0).toString());
+        name.setText(model.getValueAt(index, 1).toString());
+        password.setText(model.getValueAt(index, 2).toString());
+        genderBox.setSelectedItem(model.getValueAt(index, 3).toString());
+    }//GEN-LAST:event_sellersTableMouseClicked
 
-        /* Create and display the form */
+    public void selectSeller() {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from seller_tb");
+            sellersTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Seller().setVisible(true);
