@@ -1,11 +1,14 @@
 package supermarket;
 
+import java.awt.print.PrinterException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
@@ -26,7 +29,7 @@ public class Bill extends javax.swing.JFrame {
     ResultSet resultSet = null;
     PreparedStatement preparedStatement = null;
     Double uPrice;
-    int quantityVal;
+    int quantityVal, availableVal;
     Double totalPrice = 0.0;
 
     @SuppressWarnings("unchecked")
@@ -42,14 +45,14 @@ public class Bill extends javax.swing.JFrame {
         name = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        quantity = new javax.swing.JTextField();
+        bQnt = new javax.swing.JTextField();
         category = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         prodTable = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         clearBtn = new javax.swing.JButton();
-        editBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
+        printBtn = new javax.swing.JButton();
+        filterBtn = new javax.swing.JButton();
         addBtn = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         billTxt = new javax.swing.JTextArea();
@@ -103,11 +106,11 @@ public class Bill extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel7.setText("FILTER BY");
 
-        quantity.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12)); // NOI18N
-        quantity.setForeground(new java.awt.Color(0, 204, 255));
-        quantity.addActionListener(new java.awt.event.ActionListener() {
+        bQnt.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12)); // NOI18N
+        bQnt.setForeground(new java.awt.Color(0, 204, 255));
+        bQnt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quantityActionPerformed(evt);
+                bQntActionPerformed(evt);
             }
         });
 
@@ -157,37 +160,37 @@ public class Bill extends javax.swing.JFrame {
             }
         });
 
-        editBtn.setBackground(new java.awt.Color(0, 204, 255));
-        editBtn.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        editBtn.setForeground(new java.awt.Color(255, 255, 255));
-        editBtn.setText("PRINT");
-        editBtn.setBorder(null);
-        editBtn.setBorderPainted(false);
-        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        printBtn.setBackground(new java.awt.Color(0, 204, 255));
+        printBtn.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        printBtn.setForeground(new java.awt.Color(255, 255, 255));
+        printBtn.setText("PRINT");
+        printBtn.setBorder(null);
+        printBtn.setBorderPainted(false);
+        printBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                editBtnMouseClicked(evt);
+                printBtnMouseClicked(evt);
             }
         });
-        editBtn.addActionListener(new java.awt.event.ActionListener() {
+        printBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editBtnActionPerformed(evt);
+                printBtnActionPerformed(evt);
             }
         });
 
-        deleteBtn.setBackground(new java.awt.Color(0, 204, 255));
-        deleteBtn.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        deleteBtn.setForeground(new java.awt.Color(255, 255, 255));
-        deleteBtn.setText("REFRESH");
-        deleteBtn.setBorder(null);
-        deleteBtn.setBorderPainted(false);
-        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        filterBtn.setBackground(new java.awt.Color(0, 204, 255));
+        filterBtn.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        filterBtn.setForeground(new java.awt.Color(255, 255, 255));
+        filterBtn.setText("REFRESH");
+        filterBtn.setBorder(null);
+        filterBtn.setBorderPainted(false);
+        filterBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteBtnMouseClicked(evt);
+                filterBtnMouseClicked(evt);
             }
         });
-        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+        filterBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteBtnActionPerformed(evt);
+                filterBtnActionPerformed(evt);
             }
         });
 
@@ -231,14 +234,14 @@ public class Bill extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(id, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                                     .addComponent(name)
-                                    .addComponent(quantity, javax.swing.GroupLayout.Alignment.TRAILING))))
+                                    .addComponent(bQnt, javax.swing.GroupLayout.Alignment.TRAILING))))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(filterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -249,7 +252,7 @@ public class Bill extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(24, 24, 24))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(printBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(188, 188, 188))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -273,7 +276,7 @@ public class Bill extends javax.swing.JFrame {
                             .addComponent(jLabel4))
                         .addGap(15, 15, 15)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bQnt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(24, 24, 24)
                         .addComponent(jLabel8)
@@ -281,7 +284,7 @@ public class Bill extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
-                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(filterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -289,7 +292,7 @@ public class Bill extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(printBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 22, Short.MAX_VALUE))
         );
 
@@ -350,64 +353,72 @@ public class Bill extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameActionPerformed
 
-    private void quantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantityActionPerformed
+    private void bQntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bQntActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_quantityActionPerformed
+    }//GEN-LAST:event_bQntActionPerformed
 
     private void prodTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prodTableMouseClicked
         DefaultTableModel model = (DefaultTableModel) prodTable.getModel();
         int index = prodTable.getSelectedRow();
         name.setText(model.getValueAt(index, 1).toString());
-        uPrice = Double.valueOf(model.getValueAt(index, 3).toString());
-        //tQnt = uPrice + Integer.valueOf(quantity.getText());
+        availableVal = Integer.parseInt(model.getValueAt(index, 3).toString());
+        uPrice = Double.valueOf(model.getValueAt(index, 4).toString());
     }//GEN-LAST:event_prodTableMouseClicked
 
     private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
         id.setText("");
         name.setText("");
-        quantity.setText("");
+        bQnt.setText("");
     }//GEN-LAST:event_clearBtnMouseClicked
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_clearBtnActionPerformed
 
-    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+    private void printBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printBtnMouseClicked
+        try {
+            billTxt.print();
+        } catch (PrinterException ex) {
+            Logger.getLogger(Bill.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_printBtnMouseClicked
 
-    }//GEN-LAST:event_editBtnMouseClicked
-
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+    private void printBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_editBtnActionPerformed
+    }//GEN-LAST:event_printBtnActionPerformed
 
-    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
+    private void filterBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filterBtnMouseClicked
 
-    }//GEN-LAST:event_deleteBtnMouseClicked
+    }//GEN-LAST:event_filterBtnMouseClicked
 
-    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+    private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_deleteBtnActionPerformed
-    
+    }//GEN-LAST:event_filterBtnActionPerformed
+
     int i = 0;
     private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
-        if(quantity.getText().isEmpty() || name.getText().isEmpty()) {
+        if (bQnt.getText().isEmpty() || name.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Missing info!");
         } else {
-            i++;
-            quantityVal = Integer.parseInt(quantity.getText());
-            double itemTotal = uPrice * quantityVal;
-            totalPrice += itemTotal;
+            quantityVal = Integer.parseInt(bQnt.getText());
+            if (quantityVal > availableVal) {
+                JOptionPane.showMessageDialog(this, "Not enough in stock!");
+            } else {
+                i++;
+                double itemTotal = uPrice * quantityVal;
+                totalPrice += itemTotal;
 
-            StringBuilder billText = new StringBuilder();
-            if (i == 1) {
-                billText.append("===================ABIYIR MARKET===================\n")
-                        .append("NUM\tPRODUCT\tPRICE\tQUANTITY\tTOTAL\n");
+                StringBuilder billText = new StringBuilder();
+                if (i == 1) {
+                    billText.append("===================ABIYIR MARKET===================\n")
+                            .append("NUM\tPRODUCT\tPRICE\tQUANTITY\tTOTAL\n");
+                }
+                billText.append(billTxt.getText().substring(0, billTxt.getText().lastIndexOf("\nTOTAL:") == -1 ? billTxt.getText().length() : billTxt.getText().lastIndexOf("\nTOTAL:")));
+                billText.append(i).append("\t").append(name.getText()).append("\t").append(uPrice).append("\t").append(quantityVal).append("\t").append(itemTotal).append("\n");
+                billText.append("\nTOTAL: ").append(totalPrice);
+
+                billTxt.setText(billText.toString());
             }
-            billText.append(billTxt.getText().substring(0, billTxt.getText().lastIndexOf("\nTOTAL:") == -1 ? billTxt.getText().length() : billTxt.getText().lastIndexOf("\nTOTAL:")));
-            billText.append(i).append("\t").append(name.getText()).append("\t").append(uPrice).append("\t").append(quantityVal).append("\t").append(itemTotal).append("\n");
-            billText.append("\nTOTAL: ").append(totalPrice);
-            
-            billTxt.setText(billText.toString());
         }
     }//GEN-LAST:event_addBtnMouseClicked
 
@@ -458,12 +469,12 @@ public class Bill extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
+    private javax.swing.JTextField bQnt;
     private javax.swing.JTextArea billTxt;
     private javax.swing.JComboBox<String> category;
     private javax.swing.JButton clearBtn;
-    private javax.swing.JButton deleteBtn;
-    private javax.swing.JButton editBtn;
     private javax.swing.JLabel exit;
+    private javax.swing.JButton filterBtn;
     private javax.swing.JTextField id;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -476,7 +487,7 @@ public class Bill extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField name;
+    private javax.swing.JButton printBtn;
     private javax.swing.JTable prodTable;
-    private javax.swing.JTextField quantity;
     // End of variables declaration//GEN-END:variables
 }

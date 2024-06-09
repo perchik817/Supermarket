@@ -98,7 +98,7 @@
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="id" alignment="0" pref="233" max="32767" attributes="0"/>
                                           <Component id="name" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="quantity" alignment="1" max="32767" attributes="0"/>
+                                          <Component id="bQnt" alignment="1" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -108,7 +108,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="category" min="-2" pref="197" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="deleteBtn" min="-2" pref="83" max="-2" attributes="0"/>
+                                  <Component id="filterBtn" min="-2" pref="83" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
@@ -124,7 +124,7 @@
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="editBtn" min="-2" pref="83" max="-2" attributes="0"/>
+                              <Component id="printBtn" min="-2" pref="83" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="188" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -155,7 +155,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="quantity" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="bQnt" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
@@ -164,7 +164,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="category" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="deleteBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
+                                  <Component id="filterBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane1" min="-2" pref="248" max="-2" attributes="0"/>
@@ -175,7 +175,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="clearBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
                           <Component id="addBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
-                          <Component id="editBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
+                          <Component id="printBtn" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="22" max="32767" attributes="0"/>
                   </Group>
@@ -269,7 +269,7 @@
                 <Property name="text" type="java.lang.String" value="FILTER BY"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="quantity">
+            <Component class="javax.swing.JTextField" name="bQnt">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Microsoft JhengHei UI" size="12" style="1"/>
@@ -279,7 +279,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quantityActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bQntActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="category">
@@ -408,7 +408,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearBtnActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="editBtn">
+            <Component class="javax.swing.JButton" name="printBtn">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="cc" red="0" type="rgb"/>
@@ -426,11 +426,11 @@
                 <Property name="borderPainted" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="editBtnMouseClicked"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editBtnActionPerformed"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="printBtnMouseClicked"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="printBtnActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="deleteBtn">
+            <Component class="javax.swing.JButton" name="filterBtn">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="cc" red="0" type="rgb"/>
@@ -448,8 +448,8 @@
                 <Property name="borderPainted" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="deleteBtnMouseClicked"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="filterBtnMouseClicked"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="filterBtnActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="addBtn">
