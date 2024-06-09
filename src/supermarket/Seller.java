@@ -149,7 +149,7 @@ public class Seller extends javax.swing.JFrame {
         editBtn.setBackground(new java.awt.Color(0, 204, 255));
         editBtn.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         editBtn.setForeground(new java.awt.Color(255, 255, 255));
-        editBtn.setText("EDIT");
+        editBtn.setText("UPDATE");
         editBtn.setBorder(null);
         editBtn.setBorderPainted(false);
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
