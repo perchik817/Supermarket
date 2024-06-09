@@ -28,9 +28,8 @@ public class Bill extends javax.swing.JFrame {
     Statement statement = null;
     ResultSet resultSet = null;
     PreparedStatement preparedStatement = null;
-    Double uPrice;
-    int quantityVal, availableVal;
-    Double totalPrice = 0.0;
+    Double uPrice, totalPrice = 0.0;
+    int quantityVal, availableVal, prId, newQnt;
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -360,9 +359,11 @@ public class Bill extends javax.swing.JFrame {
     private void prodTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prodTableMouseClicked
         DefaultTableModel model = (DefaultTableModel) prodTable.getModel();
         int index = prodTable.getSelectedRow();
+        prId = Integer.parseInt(model.getValueAt(index, 0).toString());
         name.setText(model.getValueAt(index, 1).toString());
         availableVal = Integer.parseInt(model.getValueAt(index, 3).toString());
         uPrice = Double.valueOf(model.getValueAt(index, 4).toString());
+        //newQnt = availableVal - Integer.parseInt(bQnt.getText());
     }//GEN-LAST:event_prodTableMouseClicked
 
     private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
@@ -395,6 +396,22 @@ public class Bill extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_filterBtnActionPerformed
 
+    public void update(){
+        try {
+                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+                String query = "UPDATE product_tb SET quantity=? WHERE id=?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, newQnt);
+                preparedStatement.setInt(2, prId);
+                preparedStatement.executeUpdate();
+                connection.close();
+                selectProd();
+            } catch (SQLException ex) {
+                Logger.getLogger(Bill.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to the database");
+            }
+    }
+    
     int i = 0;
     private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
         if (bQnt.getText().isEmpty() || name.getText().isEmpty()) {
@@ -416,8 +433,9 @@ public class Bill extends javax.swing.JFrame {
                 billText.append(billTxt.getText().substring(0, billTxt.getText().lastIndexOf("\nTOTAL:") == -1 ? billTxt.getText().length() : billTxt.getText().lastIndexOf("\nTOTAL:")));
                 billText.append(i).append("\t").append(name.getText()).append("\t").append(uPrice).append("\t").append(quantityVal).append("\t").append(itemTotal).append("\n");
                 billText.append("\nTOTAL: ").append(totalPrice);
-
+                newQnt = availableVal - quantityVal;
                 billTxt.setText(billText.toString());
+                update();
             }
         }
     }//GEN-LAST:event_addBtnMouseClicked
