@@ -302,8 +302,10 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please, fill all fields!");
         } else {
             String query;
+            Boolean isAdmin = false;
             if (roleBox.getSelectedItem().toString().equals("Admin")) {
                 query = "select * from admin_tb where name='" + uId.getText() + "' and password='" + password.getText() + "'";
+                isAdmin = true;
             } else {
                 query = "select * from seller_tb where name='" + uId.getText() + "' and password='" + password.getText() + "'";
             }
@@ -312,7 +314,11 @@ public class Login extends javax.swing.JFrame {
                 statement = connection.createStatement();
                 resultSet = statement.executeQuery(query);
                 if (resultSet.next()) {
-                    new Bill().setVisible(true);
+                    if (isAdmin) {
+                        new AdminPanel().setVisible(true);
+                    } else {
+                        new Bill().setVisible(true);
+                    }
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Wrong name or password!");

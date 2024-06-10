@@ -420,18 +420,6 @@ public class Bill extends javax.swing.JFrame {
     }//GEN-LAST:event_printBtnActionPerformed
 
     private void refreshBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshBtnMouseClicked
-//        try {
-//            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-//            statement = connection.createStatement();
-//            String q = "select * from category_tb'";
-//            prodTable.setModel(DbUtils.resultSetToTableModel(resultSet));
-//            while (resultSet.next()) {
-//                String cat = resultSet.getString("name");
-//                category.addItem(cat);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         selectProd();
     }//GEN-LAST:event_refreshBtnMouseClicked
 
