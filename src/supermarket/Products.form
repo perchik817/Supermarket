@@ -333,15 +333,7 @@
                   <Color blue="ff" green="cc" red="0" type="rgb"/>
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="7">
-                    <StringItem index="0" value="Snack"/>
-                    <StringItem index="1" value="Beverage"/>
-                    <StringItem index="2" value="Vegetable"/>
-                    <StringItem index="3" value="Fruit"/>
-                    <StringItem index="4" value="Bakery "/>
-                    <StringItem index="5" value="Sweet"/>
-                    <StringItem index="6" value="Semi-finished"/>
-                  </StringArray>
+                  <StringArray count="0"/>
                 </Property>
               </Properties>
               <AuxValues>

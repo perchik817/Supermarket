@@ -21,6 +21,7 @@ public class Products extends javax.swing.JFrame {
     public Products() {
         initComponents();
         selectProd();
+        getCategory();
     }
 
     Connection connection = null;
@@ -126,7 +127,6 @@ public class Products extends javax.swing.JFrame {
 
         category.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         category.setForeground(new java.awt.Color(0, 204, 255));
-        category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Snack", "Beverage", "Vegetable", "Fruit", "Bakery ", "Sweet", "Semi-finished" }));
 
         prodTable.setFont(new java.awt.Font("Microsoft JhengHei", 0, 12)); // NOI18N
         prodTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -418,8 +418,6 @@ public class Products extends javax.swing.JFrame {
                 preparedStatement.setString(3, category.getSelectedItem().toString());
                 preparedStatement.setInt(4, Integer.parseInt(quantity.getText()));
                 preparedStatement.setInt(5, Integer.parseInt(price.getText()));
-
-                int row = preparedStatement.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Product added successfully.");
                 connection.close();
                 selectProd();
@@ -458,7 +456,7 @@ public class Products extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBtnMouseClicked
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
-        if (id.getText().isEmpty() || name.getText().isEmpty() || quantity.getText().isEmpty()  || price.getText().isEmpty()) {
+        if (id.getText().isEmpty() || name.getText().isEmpty() || quantity.getText().isEmpty() || price.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Missing info!");
         } else {
             try {
@@ -496,6 +494,22 @@ public class Products extends javax.swing.JFrame {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from product_tb");
             prodTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to connect to the database");
+        }
+    }
+
+    public void getCategory() {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+            statement = connection.createStatement();
+            String q = "select * from category_tb";
+            resultSet = statement.executeQuery(q);
+            while(resultSet.next()){
+                String cat = resultSet.getString("name");
+                category.addItem(cat);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to connect to the database");
