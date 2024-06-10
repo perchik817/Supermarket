@@ -22,6 +22,7 @@ public class Bill extends javax.swing.JFrame {
     public Bill() {
         initComponents();
         selectProd();
+        getCategory();
     }
 
     Connection connection = null;
@@ -115,7 +116,6 @@ public class Bill extends javax.swing.JFrame {
 
         category.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         category.setForeground(new java.awt.Color(0, 204, 255));
-        category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Snack", "Beverage", "Vegetable", "Fruit", "Bakery ", "Sweet", "Semi-finished" }));
 
         prodTable.setFont(new java.awt.Font("Microsoft JhengHei", 0, 12)); // NOI18N
         prodTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -396,22 +396,22 @@ public class Bill extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_filterBtnActionPerformed
 
-    public void update(){
+    public void update() {
         try {
-                connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
-                String query = "UPDATE product_tb SET quantity=? WHERE id=?";
-                preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setInt(1, newQnt);
-                preparedStatement.setInt(2, prId);
-                preparedStatement.executeUpdate();
-                connection.close();
-                selectProd();
-            } catch (SQLException ex) {
-                Logger.getLogger(Bill.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to connect to the database");
-            }
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+            String query = "UPDATE product_tb SET quantity=? WHERE id=?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, newQnt);
+            preparedStatement.setInt(2, prId);
+            preparedStatement.executeUpdate();
+            connection.close();
+            selectProd();
+        } catch (SQLException ex) {
+            Logger.getLogger(Bill.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Failed to connect to the database");
+        }
     }
-    
+
     int i = 0;
     private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
         if (bQnt.getText().isEmpty() || name.getText().isEmpty()) {
@@ -448,12 +448,28 @@ public class Bill extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMouseClicked
 
-    public void selectProd() {
+    private void selectProd() {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from product_tb");
             prodTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to connect to the database");
+        }
+    }
+
+    private void getCategory() {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
+            statement = connection.createStatement();
+            String q = "select * from category_tb";
+            resultSet = statement.executeQuery(q);
+            while (resultSet.next()) {
+                String cat = resultSet.getString("name");
+                category.addItem(cat);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to connect to the database");

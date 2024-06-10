@@ -488,7 +488,7 @@ public class Products extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMouseClicked
 
-    public void selectProd() {
+    private void selectProd() {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
             statement = connection.createStatement();
@@ -500,7 +500,7 @@ public class Products extends javax.swing.JFrame {
         }
     }
 
-    public void getCategory() {
+    private void getCategory() {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
             statement = connection.createStatement();
