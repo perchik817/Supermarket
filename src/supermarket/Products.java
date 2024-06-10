@@ -310,7 +310,7 @@ public class Products extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
 
@@ -418,7 +418,12 @@ public class Products extends javax.swing.JFrame {
                 preparedStatement.setString(3, category.getSelectedItem().toString());
                 preparedStatement.setInt(4, Integer.parseInt(quantity.getText()));
                 preparedStatement.setInt(5, Integer.parseInt(price.getText()));
-                JOptionPane.showMessageDialog(this, "Product added successfully.");
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(this, "Product added successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add product.");
+                }
                 connection.close();
                 selectProd();
             } catch (SQLException e) {
@@ -485,7 +490,8 @@ public class Products extends javax.swing.JFrame {
     }//GEN-LAST:event_editBtnMouseClicked
 
     private void exitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitMouseClicked
-        System.exit(0);
+        new AdminPanel().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_exitMouseClicked
 
     private void selectProd() {
@@ -494,6 +500,7 @@ public class Products extends javax.swing.JFrame {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from product_tb");
             prodTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to connect to the database");
@@ -506,10 +513,11 @@ public class Products extends javax.swing.JFrame {
             statement = connection.createStatement();
             String q = "select * from category_tb";
             resultSet = statement.executeQuery(q);
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 String cat = resultSet.getString("name");
                 category.addItem(cat);
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to connect to the database");

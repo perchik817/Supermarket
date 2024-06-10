@@ -437,7 +437,8 @@ public class Category extends javax.swing.JFrame {
     }//GEN-LAST:event_editBtnMouseClicked
 
     private void exitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitMouseClicked
-        System.exit(0);
+        new AdminPanel().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_exitMouseClicked
 
     public void selectCategory() {

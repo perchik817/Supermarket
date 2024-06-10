@@ -423,9 +423,9 @@ public class Seller extends javax.swing.JFrame {
     }//GEN-LAST:event_delBtnMouseClicked
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
-        if(id.getText().isEmpty() || name.getText().isEmpty() || password.getText().isEmpty()){
+        if (id.getText().isEmpty() || name.getText().isEmpty() || password.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please, fill all fields!");
-        } else{
+        } else {
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
                 String query = "UPDATE seller_tb SET name=?, password=?, gender=? WHERE id=?";
@@ -457,7 +457,8 @@ public class Seller extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnMouseClicked
 
     private void exitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitMouseClicked
-        System.exit(0);
+        new AdminPanel().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_exitMouseClicked
 
     public void selectSeller() {
@@ -468,7 +469,7 @@ public class Seller extends javax.swing.JFrame {
             sellersTable.setModel(DbUtils.resultSetToTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
-                System.out.println("Failed to connect to the database");
+            System.out.println("Failed to connect to the database");
         }
     }
 

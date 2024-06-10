@@ -1,4 +1,5 @@
 package supermarket;
+
 /**
  *
  * @author Perchik
@@ -7,6 +8,7 @@ public class Splash extends javax.swing.JFrame {
 
     public Splash() {
         initComponents();
+        showSplash();
     }
 
     @SuppressWarnings("unchecked")
@@ -92,20 +94,42 @@ public class Splash extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        Splash mySplash = new Splash();
-        mySplash.setVisible(true);
-        try{
-            for (int i = 0; i <= 100; i++){
-                Thread.sleep(40);
-                mySplash.myProgressBar.setValue(i);
-                mySplash.percentage.setText(Integer.toString(i) + "%");
+    private void showSplash(){
+        new Thread(() -> {
+            try {
+                for (int i = 0; i <= 100; i++) {
+                    Thread.sleep(40);
+                    myProgressBar.setValue(i);
+                    percentage.setText(i + "%");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        new Login().setVisible(true);
-        mySplash.dispose();
+            this.dispose();
+            new Login().setVisible(true);
+        }).start();
+    }
+    
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Splash().setVisible(true);
+            }
+        });
+//        Splash mySplash = new Splash();
+//        mySplash.setVisible(true);
+//        try{
+//            for (int i = 0; i <= 100; i++){
+//                Thread.sleep(40);
+//                mySplash.myProgressBar.setValue(i);
+//                mySplash.percentage.setText(Integer.toString(i) + "%");
+//            }
+//        } catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
+//        new Login().setVisible(true);
+//        mySplash.dispose();
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
