@@ -301,7 +301,12 @@ public class Login extends javax.swing.JFrame {
         if (uId.getText().isEmpty() || password.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please, fill all fields!");
         } else {
-            String query = "select * from seller_tb where name='" + uId.getText() + "' and password='" + password.getText() + "'";
+            String query;
+            if (roleBox.getSelectedItem().toString().equals("Admin")) {
+                query = "select * from admin_tb where name='" + uId.getText() + "' and password='" + password.getText() + "'";
+            } else {
+                query = "select * from seller_tb where name='" + uId.getText() + "' and password='" + password.getText() + "'";
+            }
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/supermarket", "postgres", "postgres");
                 statement = connection.createStatement();
